@@ -81,6 +81,22 @@ export const signIn = async (req, res) => {
     console.error("Lỗi khi gọi signin:", error);
     res.status(500).json({ message: "Lỗi máy chủ" });
    }
-}
+};
+export const signOut = async (req, res) => {
+    try {
+       const token = req.cookies.refreshToken;
+       if(token) {
+         // xoa session trong db
+        await Session.findOneAndDelete({refreshToken: token});
+         // xoa cookie tren client
+        res.clearCookie("refreshToken");
+       }
+        return  res.sendStatus(204);
+    } catch (error) {
+            console.error("Lỗi khi gọi signout:", error);
+            res.status(500).json({ message: "Lỗi máy chủ" });
+        
+    }
+};
 
 
